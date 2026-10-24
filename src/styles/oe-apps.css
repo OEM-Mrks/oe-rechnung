@@ -1,0 +1,182 @@
+/* oe-apps.css – Designsystem fuer Browser-Tools auf oemedia.de
+   Look & Feel nach Campfire/Fizzy (37signals), eigene Umsetzung. Siehe DESIGN.md.
+   Alles unter .oe-app, Tokens --oe-*, Klassen oe-*. Kein rem: das Ghost-Theme
+   setzt html{font-size:62.5%} (1rem = 10px) – Basis ist 16px am .oe-app, sonst em.
+   Komponenten stehen als ".oe-app .oe-x" (Spezifitaet 0,2,0), damit Regeln wie
+   ".gh-content h2" oder ".gh-content a" des Themes nicht durchschlagen. */
+
+/* ---------- 1. Tokens ------------------------------------------------
+   Farben per light-dark(): color-scheme "light dark" folgt dem System,
+   data-theme="light|dark" am .oe-app erzwingt ein Schema. */
+.oe-app {
+  color-scheme: light dark;
+  /* light-dark(HELL, DUNKEL) */
+  --oe-canvas: light-dark(oklch(99.2% .004 90), oklch(21% .016 250));   /* warmes Weiss */
+  --oe-surface: light-dark(oklch(96.8% .009 90), oklch(25.5% .018 255)); /* Flaechen */
+  --oe-ink: light-dark(oklch(27% .045 258), oklch(95.5% .004 90));  /* Navy-Text */
+  --oe-ink-muted: light-dark(oklch(52% .02 258), oklch(72% .01 260));
+  --oe-line: light-dark(oklch(90.5% .008 90), oklch(32% .018 260));
+  --oe-line-strong: light-dark(oklch(78% .01 90), oklch(44% .015 260));
+  --oe-accent: light-dark(oklch(55% .2 258), oklch(72% .14 256));    /* kraeftiges Blau */
+  --oe-accent-soft: light-dark(oklch(94.5% .03 258), oklch(32% .06 258));
+  --oe-on-accent: light-dark(oklch(100% 0 0), oklch(18% .02 258));
+  --oe-positive: light-dark(oklch(55% .16 147), oklch(74% .12 145));
+  --oe-negative: light-dark(oklch(57% .19 35), oklch(74% .14 40));
+  --oe-warning: light-dark(oklch(66% .16 70), oklch(80% .13 75));
+  --oe-focus: var(--oe-accent);
+
+  /* Schrift: nutzt die Seitenschriften (Noto Sans / Space Grotesk), sonst System */
+  --oe-font: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --oe-font-head: "Space Grotesk", var(--oe-font);
+  --oe-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --oe-font-size: 16px; /* einzige px-Basis, alles andere em */
+  --oe-text-xs: .75em; --oe-text-sm: .875em; --oe-text-md: 1.1em; --oe-text-lg: 1.5em;
+
+  /* Abstaende (wie Campfire: inline 1ch, block 1 Einheit, halb/doppelt) */
+  --oe-space-inline: 1ch; --oe-space: 1em; --oe-space-half: .5em; --oe-space-double: 2em;
+
+  /* Radien: Inputs / Karten / Panels / Pill */
+  --oe-radius-sm: .5em; --oe-radius: .75em; --oe-radius-lg: 1em; --oe-radius-pill: 99em;
+
+  /* Schatten: mehrlagig, im Dunkeln kraeftiger */
+  --oe-shadow-c: light-dark(oklch(0% 0 0 / 5%), oklch(0% 0 0 / 35%));
+  --oe-shadow: 0 0 0 1px var(--oe-shadow-c), 0 .2em .2em var(--oe-shadow-c),
+    0 .4em .4em var(--oe-shadow-c), 0 .8em .8em var(--oe-shadow-c);
+
+  /* Bewegung & Groessen */
+  --oe-ease: cubic-bezier(.16, 1, .3, 1); --oe-fast: 150ms;
+  --oe-control: 2.5em; /* = 40px Mindest-Touchgroesse */
+
+  box-sizing: border-box;
+  background: var(--oe-canvas);
+  color: var(--oe-ink);
+  font-family: var(--oe-font);
+  font-size: var(--oe-font-size);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+.oe-app[data-theme="light"] { color-scheme: light; }
+.oe-app[data-theme="dark"] { color-scheme: dark; }
+
+/* ---------- 2. Mini-Reset (nur im Tool) ---------- */
+.oe-app *, .oe-app *::before, .oe-app *::after { box-sizing: inherit; }
+.oe-app :is(h1, h2, h3, h4, p, ul, ol, li, figure) { margin: 0; font-size: inherit; letter-spacing: normal; }
+.oe-app :is(ul, ol) { padding-left: 1.3em; }
+.oe-app :is(button, input, select, textarea) { font: inherit; color: inherit; margin: 0; }
+.oe-app ::selection { background: var(--oe-accent-soft); }
+
+/* ---------- 3. Kopfbereich: Label, Titel, Kurzbeschreibung, Aktionen ---------- */
+.oe-app .oe-head { display: flex; flex-wrap: wrap; align-items: flex-start; gap: .5em 1em; margin-bottom: var(--oe-space); }
+.oe-app .oe-head__text { flex: 1 1 18em; min-width: 0; }
+.oe-app .oe-head__label { font-size: var(--oe-text-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--oe-accent); }
+.oe-app .oe-head__title { font-family: var(--oe-font-head); font-size: var(--oe-text-lg); font-weight: 700; line-height: 1.15; }
+.oe-app .oe-head__desc { margin-top: .35em; color: var(--oe-ink-muted); max-width: 60ch; }
+
+/* ---------- 4. Buttons (Pill ist Standard, Varianten setzen nur Variablen) ---------- */
+.oe-app .oe-btn {
+  --b-bg: var(--oe-canvas); --b-fg: var(--oe-ink); --b-bd: var(--oe-line-strong);
+  appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  min-height: var(--oe-control); padding: .5em 1.1em; font-weight: 600; line-height: 1.2;
+  background: var(--b-bg); color: var(--b-fg); border: 1px solid var(--b-bd); border-radius: var(--oe-radius-pill);
+  text-decoration: none; white-space: nowrap; cursor: pointer; touch-action: manipulation;
+  transition: var(--oe-fast) ease; transition-property: box-shadow, filter, background-color, transform;
+}
+@media (any-hover: hover) {
+  .oe-app .oe-btn:hover { box-shadow: 0 0 0 .15em var(--oe-line-strong); }
+  .oe-app :is(.oe-btn--primary, .oe-btn--dark, .oe-btn--danger):hover { box-shadow: none; filter: brightness(1.12); }
+}
+.oe-app .oe-btn:active { transform: scale(.97); }
+.oe-app .oe-btn:is(:disabled, [aria-disabled="true"]) { opacity: .45; cursor: not-allowed; box-shadow: none; filter: none; }
+.oe-app .oe-btn--primary { --b-bg: var(--oe-accent); --b-fg: var(--oe-on-accent); --b-bd: transparent; }
+.oe-app .oe-btn--dark { --b-bg: var(--oe-ink); --b-fg: var(--oe-canvas); --b-bd: transparent; }
+.oe-app .oe-btn--danger { --b-bg: var(--oe-negative); --b-fg: var(--oe-on-accent); --b-bd: transparent; }
+.oe-app .oe-btn--ghost { --b-bg: transparent; --b-bd: transparent; }
+.oe-app .oe-btn--pill { border-radius: var(--oe-radius-pill); } /* explizit, = Default */
+.oe-app .oe-btn--sm { min-height: 2.25em; padding: .3em .85em; font-size: var(--oe-text-sm); }
+.oe-app .oe-btn--icon { width: var(--oe-control); padding: 0; border-radius: 50%; }
+.oe-app .oe-btn svg { width: 1.2em; height: 1.2em; flex: none; }
+
+/* ---------- 5. Formulare ---------- */
+.oe-app .oe-field { display: grid; align-content: start; gap: .35em; min-width: 0; }
+.oe-app .oe-label { font-size: var(--oe-text-sm); font-weight: 600; }
+.oe-app .oe-hint { font-size: var(--oe-text-sm); color: var(--oe-ink-muted); }
+.oe-app :is(.oe-input, .oe-select) {
+  appearance: none; width: 100%; min-height: var(--oe-control); padding: .5em .8em;
+  background: var(--oe-canvas); color: var(--oe-ink); border: 1px solid var(--oe-line-strong); border-radius: var(--oe-radius-sm);
+  font-size: max(16px, 1em); /* kein iOS-Zoom */
+  transition: border-color var(--oe-fast) ease, box-shadow var(--oe-fast) ease;
+}
+.oe-app .oe-input::placeholder { color: var(--oe-ink-muted); opacity: .8; }
+.oe-app textarea.oe-input { min-height: 6em; resize: vertical; }
+.oe-app .oe-select {
+  padding-right: 2.4em; border-radius: var(--oe-radius-pill); cursor: pointer;
+  background: var(--oe-canvas) no-repeat right 1em center / .7em
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.oe-app :is(.oe-input, .oe-select):focus { outline: none; border-color: var(--oe-accent); box-shadow: 0 0 0 .2em var(--oe-accent-soft); }
+.oe-app .oe-input[aria-invalid="true"] { border-color: var(--oe-negative); }
+
+/* Segmentiert: <div class="oe-segmented"><label><input type="radio" name="x"><span>A</span></label>…</div> */
+.oe-app .oe-segmented { display: inline-flex; flex-wrap: wrap; gap: .25em; padding: .25em; background: var(--oe-surface); border: 1px solid var(--oe-line); border-radius: var(--oe-radius-pill); }
+.oe-app .oe-segmented label { position: relative; }
+.oe-app .oe-segmented input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.oe-app .oe-segmented span { display: inline-flex; align-items: center; min-height: 2.25em; padding: .3em 1em; border-radius: var(--oe-radius-pill); font-size: var(--oe-text-sm); font-weight: 600; color: var(--oe-ink-muted); transition: background-color var(--oe-fast) ease; }
+.oe-app .oe-segmented input:checked + span { background: var(--oe-ink); color: var(--oe-canvas); }
+.oe-app .oe-segmented input:focus-visible + span { outline: 2px solid var(--oe-focus); outline-offset: 2px; }
+
+/* Dropzone: <label class="oe-dropzone"><input type="file" class="oe-sr">…</label>; JS setzt .is-over */
+.oe-app .oe-dropzone { display: grid; place-items: center; gap: .4em; min-height: 8em; padding: 2em 1em; text-align: center; color: var(--oe-ink-muted); background: var(--oe-surface); border: 2px dashed var(--oe-line-strong); border-radius: var(--oe-radius-lg); cursor: pointer; transition: var(--oe-fast) ease; transition-property: border-color, background-color; }
+.oe-app .oe-dropzone:is(:hover, .is-over, :focus-within) { border-color: var(--oe-accent); background: var(--oe-accent-soft); color: var(--oe-ink); }
+.oe-app .oe-dropzone strong { color: var(--oe-ink); }
+
+/* ---------- 6. Flaechen & Layout ---------- */
+.oe-app .oe-card { padding: var(--oe-space); background: var(--oe-canvas); border: 1px solid var(--oe-line); border-radius: var(--oe-radius); box-shadow: var(--oe-shadow); }
+.oe-app .oe-panel { padding: var(--oe-space); background: var(--oe-surface); border: 1px solid var(--oe-line); border-radius: var(--oe-radius-lg); }
+@media (min-width: 640px) { .oe-app :is(.oe-card, .oe-panel) { padding: 1.5em; } }
+.oe-app :is(.oe-card, .oe-panel) + :is(.oe-card, .oe-panel) { margin-top: var(--oe-space); }
+.oe-app .oe-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5em; }
+.oe-app .oe-toolbar__spacer { flex: 1 1 auto; }
+.oe-app .oe-stack { display: grid; gap: var(--oe-space); }
+.oe-app .oe-grid { display: grid; gap: var(--oe-space); grid-template-columns: repeat(auto-fit, minmax(min(14em, 100%), 1fr)); }
+
+/* ---------- 7. Kleinteile ---------- */
+.oe-app .oe-badge { display: inline-flex; align-items: center; gap: .35em; padding: .15em .65em; font-size: var(--oe-text-xs); font-weight: 700; line-height: 1.5; color: var(--oe-ink-muted); background: var(--oe-surface); border: 1px solid var(--oe-line); border-radius: var(--oe-radius-pill); }
+.oe-app .oe-badge--accent { color: var(--oe-accent); background: var(--oe-accent-soft); border-color: transparent; }
+.oe-app .oe-badge--positive { color: var(--oe-positive); border-color: currentColor; background: none; }
+.oe-app .oe-badge--negative { color: var(--oe-negative); border-color: currentColor; background: none; }
+.oe-app .oe-badge--warning { color: var(--oe-warning); border-color: currentColor; background: none; }
+.oe-app .oe-mono { font-family: var(--oe-font-mono); font-size: .95em; font-variant-numeric: tabular-nums; }
+/* Eingabefelder in Mono behalten die 16px-Mindestgröße (sonst iOS-Zoom) */
+.oe-app .oe-mono:is(.oe-input, .oe-select) { font-size: max(16px, 1em); }
+.oe-app .oe-muted { color: var(--oe-ink-muted); }
+.oe-app :is(kbd, code) { font-family: var(--oe-font-mono); font-size: .85em; padding: .1em .4em; background: var(--oe-surface); border: 1px solid var(--oe-line-strong); border-radius: .3em; }
+.oe-app .oe-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Toast: <div class="oe-toast" role="status" aria-live="polite"></div>; JS setzt .is-visible */
+.oe-app .oe-toast { position: fixed; z-index: 30; left: 50%; bottom: calc(1.5em + env(safe-area-inset-bottom, 0px)); max-width: min(90vw, 32em); padding: .7em 1.4em; font-weight: 600; color: var(--oe-canvas); background: var(--oe-ink); border-radius: var(--oe-radius-pill); box-shadow: var(--oe-shadow); pointer-events: none; opacity: 0; transform: translate(-50%, 1em); transition: opacity 200ms ease, transform 300ms var(--oe-ease); }
+.oe-app .oe-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.oe-app .oe-toast--positive { color: var(--oe-on-accent); background: var(--oe-positive); }
+.oe-app .oe-toast--negative { color: var(--oe-on-accent); background: var(--oe-negative); }
+
+/* ---------- 8. Fokus, reduzierte Bewegung, mehr Kontrast ---------- */
+.oe-app :is(a, button, summary, [tabindex]):focus-visible { outline: 2px solid var(--oe-focus); outline-offset: 2px; }
+/* Weniger Bewegung: keine Bewegung mehr, aber Farb- und Deckkraftwechsel der
+   Komponenten bleiben als kurze Ueberblendung (Rueckmeldung statt Stillstand).
+   Tool-eigene Uebergaenge bleiben ueber .oe-app * bei 1ms. */
+@media (prefers-reduced-motion: reduce) {
+  .oe-app * { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+  .oe-app :is(.oe-btn, .oe-input, .oe-select, .oe-segmented span, .oe-dropzone) { transition-duration: var(--oe-fast) !important; }
+  .oe-app .oe-btn:active { transform: none; }
+  .oe-app .oe-toast { transform: translate(-50%, 0); transition: opacity 200ms ease !important; }
+}
+/* Mehr Kontrast (Systemeinstellung): kraeftigere Linien und Nebentexte, breiterer Fokusring */
+@media (prefers-contrast: more) {
+  .oe-app {
+    --oe-ink-muted: light-dark(oklch(40% .03 258), oklch(86% .008 260));
+    --oe-line: light-dark(oklch(62% .012 90), oklch(60% .015 260));
+    --oe-line-strong: light-dark(oklch(42% .03 258), oklch(82% .01 260));
+    --oe-shadow-c: light-dark(oklch(0% 0 0 / 12%), oklch(0% 0 0 / 50%));
+  }
+  .oe-app .oe-input::placeholder { opacity: 1; }
+  .oe-app :is(a, button, summary, [tabindex]):focus-visible { outline-width: 3px; }
+}
