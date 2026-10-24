@@ -281,9 +281,9 @@ function Editor({ row, data, setData, reload, version }: EditorProps) {
 
       <div className="bar">
         <div className="bar-sum"><span>Gesamt</span><strong>{eur(T.total)}</strong></div>
-        <button type="button" className="oe-btn" aria-expanded={showPrev} onClick={() => setShowPrev(!showPrev)}>{Icon.eye}<span className="long">{showPrev ? 'Vorschau schließen' : 'Vorschau'}</span></button>
-        <button type="button" className="oe-btn" disabled={busy} onClick={() => void output('xrechnung')}>{Icon.down}<span className="long">XRechnung</span><span className="short">XML</span></button>
-        <button type="button" className="oe-btn oe-btn--primary" disabled={busy} onClick={() => void output('pdf')}>{Icon.down}<span className="long">{settings.defaults.einvoice ? 'ZUGFeRD-PDF' : 'PDF'}</span><span className="short">PDF</span></button>
+        <button type="button" className="oe-btn" aria-expanded={showPrev} aria-label={showPrev ? 'Vorschau schließen' : 'Vorschau'} title={showPrev ? 'Vorschau schließen' : 'Vorschau'} onClick={() => setShowPrev(!showPrev)}>{Icon.eye}<span className="long">{showPrev ? 'Vorschau schließen' : 'Vorschau'}</span></button>
+        <button type="button" className="oe-btn" disabled={busy} aria-label="XRechnung herunterladen" title="XRechnung (XML) herunterladen" onClick={() => void output('xrechnung')}>{Icon.down}<span className="long">XRechnung</span><span className="short">XML</span></button>
+        <button type="button" className="oe-btn oe-btn--primary" disabled={busy} aria-label={(settings.defaults.einvoice ? 'ZUGFeRD-PDF' : 'PDF') + ' herunterladen'} onClick={() => void output('pdf')}>{Icon.down}<span className="long">{settings.defaults.einvoice ? 'ZUGFeRD-PDF' : 'PDF'}</span><span className="short">PDF</span></button>
       </div>
     </div>
   )
