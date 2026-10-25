@@ -46,7 +46,8 @@ das ZIP nach `~/.claude/skills/` zu entpacken.
 
 Node.js in Claudes Sandbox: Die [Doku zur Code-Ausführung](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool)
 garantiert nur Python 3.11. Anthropics eigene Skills (Word, PowerPoint) nutzen dort aber `node`. Der Skill prüft Node daher als
-ersten Schritt und verweist sonst auf die Web-App bzw. die Erweiterung. Offline getestet in `node:18-slim` mit `--network none`.
+ersten Schritt und verweist sonst auf die Web-App bzw. die Erweiterung. Offline getestet in `node:18-slim` mit `--network none`;
+am 25.10.2026 in claude.ai ausprobiert: Node v22.23.4 vorhanden, Interview von halbleerer Datei bis ZUGFeRD-PDF und XRechnung.
 
 ### Aufbau
 
