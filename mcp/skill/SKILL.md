@@ -16,7 +16,7 @@ und XRechnung 3.0.
 
 1. `node --version` ausführen. Nötig ist Node.js 18 oder neuer. Fehlt Node, dem Nutzer sagen: „In dieser Umgebung kann ich das Rechnungsprogramm nicht ausführen. Nutzen Sie die Web-App oder die Erweiterung für Claude Desktop (Seite „Mit KI“).“ Dann aufhören.
 2. Die Rechnungsdatei finden:
-   - **Hochgeladen** (z. B. unter `/mnt/user-data/uploads/`): eine `.sqlite`-Datei. Kopiere sie in ein beschreibbares Arbeitsverzeichnis und arbeite nur mit der Kopie, Uploads sind oft schreibgeschützt.
+   - **Hochgeladen** (in claude.ai unter `/mnt/user-data/attachments/…`, anderswo z. B. `/mnt/user-data/uploads/`): eine `.sqlite`-Datei. Kopiere sie in ein beschreibbares Arbeitsverzeichnis und arbeite nur mit der Kopie, Uploads sind oft schreibgeschützt.
    - **Lokal** (z. B. Claude Code auf dem Rechner des Nutzers): den Pfad erfragen oder nach `*.sqlite` mit „Rechnung“ im Namen suchen und den Fund bestätigen lassen.
    - **Keine Datei:** Frag, ob eine neue angelegt werden soll. Dann nimm einen neuen Pfad, z. B. `Rechnungen.sqlite` im Arbeitsverzeichnis; das Programm legt sie beim ersten Speichern an.
    - Eine JSON-Sicherung kann das Programm nicht öffnen. Bitte den Nutzer, sie in der Web-App zu öffnen und als Datenbank (`.sqlite`) zu speichern.
