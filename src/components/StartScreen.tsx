@@ -50,7 +50,7 @@ export function StartScreen() {
               <strong>{work.name}</strong>, zuletzt bearbeitet am {deDate(work.at.slice(0, 10))}.
               {work.dirty && <><br /><span className="warn-text">Enthält Änderungen, die noch nicht in der Datei gespeichert sind.</span></>}
             </p>
-            <button type="button" className="oe-btn oe-btn--primary" disabled={busy} onClick={() => run(async () => { await resumeWorkCopy() })}>Weiterarbeiten</button>
+            <button type="button" className="oe-btn oe-btn--primary" disabled={busy} onClick={() => run(async () => (await resumeWorkCopy()) || undefined)}>Weiterarbeiten</button>
           </section>
         )}
 
@@ -77,6 +77,7 @@ export function StartScreen() {
       <section className="start-facts" aria-label="So funktioniert es">
         <div><h3>Lokal</h3><p>Alles läuft in Ihrem Browser. Es gibt kein Konto und keine Datenübertragung.</p></div>
         <div><h3>Eine Datei</h3><p>Eine SQLite-Datenbank, die Sie sichern, verschieben und mit jedem SQLite-Programm öffnen können.</p></div>
+        <div><h3>Mit KI</h3><p>Optional: Eine KI richtet im Interview alles ein und schreibt Rechnungen für Sie. Anleitung nach dem Öffnen unter „Mit KI“.</p></div>
         <div><h3>E-Rechnung</h3><p>ZUGFeRD (EN 16931, PDF/A-3) und XRechnung 3.0, geprüft mit dem KoSIT-Validator.</p></div>
         <div><h3>{canSaveInPlace ? 'Direkt speichern' : 'Herunterladen'}</h3><p>{canSaveInPlace
           ? 'Ihr Browser kann direkt in die geöffnete Datei speichern.'

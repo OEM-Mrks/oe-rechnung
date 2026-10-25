@@ -20,6 +20,26 @@ Alle Daten liegen in **einer SQLite-Datei auf dem Computer des Nutzers**. Die Se
   automatische Arbeitskopie im Browser (IndexedDB), JSON-Sicherung, Import des alten Rechnungsbuchs vom
   Rechnungsgenerator auf oemedia.de
 
+## Mit KI arbeiten (lokaler MCP-Server)
+
+Eine KI (Claude Desktop, Claude Code, Cursor, LM Studio …) kann die Rechnungsdatei über einen **lokalen MCP-Server** bedienen,
+im Interview-Stil: Sie trägt ein, was sie über das Unternehmen schon weiß, fragt nur nach dem Rest, legt Kunden und Leistungen an,
+schreibt Entwürfe und schreibt sie erst nach ausdrücklicher Freigabe fest. Der Server läuft auf dem Rechner des Nutzers und
+liest und schreibt nur die gewählte Datei und deren Unterordner `Export`; es gibt keinen Server bei uns.
+
+- **Claude Desktop:** `oe-rechnung.mcpb` von der Seite „Mit KI“ herunterladen und doppelklicken (Ordner und Dateiname wählen)
+- **Andere Programme:** `.mcpb` entpacken (ZIP) und `node server/index.cjs --ordner <Ordner> --datei <Name>.sqlite` eintragen
+- **Werkzeuge:** `status`, `firma_lesen`, `firma_speichern`, `vorgaben_speichern`, `kunden_suchen`, `kunde_speichern`,
+  `artikel_suchen`, `artikel_speichern`, `rechnungen_auflisten`, `rechnung_anzeigen`, `rechnung_entwurf`, `rechnung_festschreiben`,
+  `rechnung_exportieren` (ZUGFeRD-PDF, PDF, XRechnung), `rechnung_status_setzen`, `entwurf_loeschen`
+- **Interview-Vorlagen (Prompts):** `einrichtung`, `rechnung_schreiben`; dazu Server-Anweisungen für den Interview-Stil
+- **Live-Ansicht:** Ist dieselbe Datei in der Web-App geöffnet (Chrome/Edge), übernimmt die App Änderungen der KI alle 2 Sekunden
+  automatisch. Haben beide Seiten ungespeicherte Änderungen, fragt die App, welche Fassung gilt.
+
+Quelltext in `mcp/server.ts`, gebaut von `mcp/build.mjs` (esbuild + `mcpb pack`) als Teil von `npm run build`;
+das Paket wird unter `/mcp/oe-rechnung.mcpb` mit der Seite ausgeliefert. `scripts/mcp.test.ts` testet den gebündelten Server
+über einen echten MCP-Client (Einrichtung, Kunde, Artikel, Entwurf, Festschreiben, Export, Zahlungsstatus).
+
 ## Technik
 
 TypeScript, React 19, Vite. SQLite über [sql.js](https://github.com/sql-js/sql.js) (WebAssembly),
@@ -41,7 +61,7 @@ es gibt keine Aufrufe an fremde Server (Content-Security-Policy im Build).
 npm install
 npm run dev      # http://localhost:5173
 npm test         # Unit-Tests
-npm run build    # nach dist/
+npm run build    # MCP-Paket + Web-App nach dist/
 ```
 
 ## E-Rechnungen prüfen

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { AiView } from './components/AiView'
 import { ArticleList } from './components/ArticleList'
 import { CustomerList } from './components/CustomerList'
 import { InvoiceEditor } from './components/InvoiceEditor'
@@ -6,9 +7,9 @@ import { InvoiceList } from './components/InvoiceList'
 import { SettingsView } from './components/SettingsView'
 import { StartScreen } from './components/StartScreen'
 import { ConfirmProvider, go, Icon, ToastProvider, useConfirm, useRoute, useToast } from './components/ui'
-import { close, downloadJson, save, saveAs, useSession } from './lib/session'
+import { close, downloadJson, onExternalChange, relink, resolveConflict, save, saveAs, useSession } from './lib/session'
 
-const NAV = [['rechnungen', 'Rechnungen'], ['kunden', 'Kunden'], ['artikel', 'Artikel'], ['einstellungen', 'Einstellungen']] as const
+const NAV = [['rechnungen', 'Rechnungen'], ['kunden', 'Kunden'], ['artikel', 'Artikel'], ['einstellungen', 'Einstellungen'], ['ki', 'Mit KI']] as const
 
 export default function App() {
   return (
@@ -23,21 +24,48 @@ export default function App() {
 function Main() {
   const s = useSession()
   const route = useRoute()
+  const toast = useToast()
+  useEffect(() => onExternalChange((msg) => toast(msg, 'positive')), [toast])
   if (!s.repo) return <StartScreen />
   const [page, arg] = route
   const section = page === 'rechnung' ? 'rechnungen' : page || 'rechnungen'
   return (
     <div className="shell">
       <TopBar section={section} />
-      <main className="page">
+      <main className="page" key={s.external}>
+        <FileNotices />
         {page === 'rechnung' && arg ? <InvoiceEditor key={arg} id={Number(arg)} />
           : section === 'kunden' ? <CustomerList />
           : section === 'artikel' ? <ArticleList />
           : section === 'einstellungen' ? <SettingsView />
+          : section === 'ki' ? <AiView />
           : <InvoiceList />}
       </main>
     </div>
   )
+}
+
+// Hinweise zur Verbindung mit der Datei: Konflikt mit Änderungen von außen, Zugriff nach Neuladen erneuern
+function FileNotices() {
+  const s = useSession()
+  const toast = useToast()
+  const act = (p: Promise<string>) => p.then((m) => m && toast(m, 'positive')).catch((e: unknown) => toast(e instanceof Error ? e.message : 'Das hat nicht geklappt.', 'negative'))
+  if (s.conflict) return (
+    <div className="notice notice--strong file-notice" role="alert">
+      <p><strong>Die Datei wurde außerhalb geändert</strong>, zum Beispiel von der KI, während Sie hier ungespeicherte Änderungen haben.</p>
+      <div className="oe-toolbar">
+        <button type="button" className="oe-btn oe-btn--sm oe-btn--primary" onClick={() => void act(resolveConflict('datei'))}>Stand aus der Datei laden</button>
+        <button type="button" className="oe-btn oe-btn--sm" onClick={() => void act(resolveConflict('meine'))}>Meine Fassung behalten</button>
+      </div>
+    </div>
+  )
+  if (s.inPlace && !s.linked) return (
+    <div className="notice file-notice">
+      <p>Der Browser braucht Ihre Erlaubnis, um <strong>{s.name}</strong> wieder zu lesen und zu speichern. Erst dann werden Änderungen der KI automatisch angezeigt.</p>
+      <div className="oe-toolbar"><button type="button" className="oe-btn oe-btn--sm" onClick={() => void act(relink())}>Zugriff erlauben</button></div>
+    </div>
+  )
+  return null
 }
 
 function TopBar({ section }: { section: string }) {
@@ -82,6 +110,7 @@ function TopBar({ section }: { section: string }) {
         <div className="filestate" title={s.inPlace ? 'Speichern schreibt direkt in diese Datei' : 'Speichern lädt die Datei herunter'}>
           <span className="filename">{s.name}</span>
           {s.dirty ? <span className="oe-badge oe-badge--warning">Nicht gespeichert</span> : <span className="oe-badge oe-badge--positive">Gespeichert</span>}
+          {s.linked && <span className="live" title="Änderungen in der Datei, etwa durch die KI, werden automatisch übernommen">live</span>}
         </div>
         <div className="topbar-actions" ref={menuRef}>
           <button type="button" className={'oe-btn oe-btn--sm' + (s.dirty ? ' oe-btn--primary' : '')} onClick={() => void doSave(false)}>{Icon.save}Speichern</button>

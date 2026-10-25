@@ -1,15 +1,16 @@
 {
   "name": "oe-rechnung",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && node mcp/build.mjs && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "oxlint",
-    "samples": "SAMPLES_OUT=samples vitest run scripts/samples.test.ts"
+    "samples": "SAMPLES_OUT=samples vitest run scripts/samples.test.ts",
+    "build:mcp": "node mcp/build.mjs"
   },
   "dependencies": {
     "jspdf": "4.2.1",
@@ -21,16 +22,20 @@
     "sql.js": "1.15.1"
   },
   "devDependencies": {
+    "@anthropic-ai/mcpb": "2.1.2",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/sql.js": "1.4.11",
     "@vitejs/plugin-react": "^6.1.2",
+    "esbuild": "0.28.2",
     "oxlint": "^1.88.0",
     "saxon-js": "2.7.0",
     "typescript": "~6.0.3",
     "vite": "^8.3.4",
-    "vitest": "5.0.5"
+    "vitest": "5.0.5",
+    "zod": "4.6.7"
   },
   "description": "Rechnungen und E-Rechnungen (ZUGFeRD, XRechnung) im Browser, Daten bleiben als SQLite-Datei beim Nutzer"
 }

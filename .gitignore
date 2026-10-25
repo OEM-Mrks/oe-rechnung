@@ -25,3 +25,7 @@ dist-ssr
 
 # Beispielrechnungen aus npm run samples
 samples
+
+# MCP-Bündel und -Paket entstehen beim Build
+mcp/bundle
+public/mcp

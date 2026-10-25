@@ -41,7 +41,8 @@ function Editor({ row, data, setData, reload, version }: EditorProps) {
   // Entwurf automatisch speichern
   const pending = useRef<InvoiceData | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const flush = () => { if (pending.current) { repo.saveDraft(row.id, pending.current); pending.current = null } }
+  // Wurde inzwischen ein neuer Stand aus der Datei übernommen (repo ausgetauscht), den alten Entwurf nicht zurückschreiben
+  const flush = () => { if (pending.current && repo === getRepo()) repo.saveDraft(row.id, pending.current); pending.current = null }
   useEffect(() => () => { clearTimeout(timer.current); flush() }, []) // eslint-disable-line react-hooks/exhaustive-deps
   function change(next: InvoiceData) {
     if (locked) return
