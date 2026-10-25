@@ -1,7 +1,7 @@
 {
   "name": "oe-rechnung",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -30,6 +30,7 @@
     "@types/sql.js": "1.4.11",
     "@vitejs/plugin-react": "^6.1.2",
     "esbuild": "0.28.2",
+    "fflate": "0.8.3",
     "oxlint": "^1.88.0",
     "saxon-js": "2.7.0",
     "typescript": "~6.0.3",

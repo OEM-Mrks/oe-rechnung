@@ -4,6 +4,7 @@ import { canSaveInPlace, useSession } from '../lib/session'
 import { Icon, useToast } from './ui'
 
 const MCPB = './mcp/oe-rechnung.mcpb'
+const SKILL = './mcp/oe-rechnung-skill.zip'
 
 export function AiView() {
   const s = useSession()
@@ -25,17 +26,29 @@ export function AiView() {
         <h1 className="page-title">Mit KI arbeiten</h1>
         <p className="oe-muted lead">
           Lassen Sie sich von einer KI interviewen: Sie trägt ein, was sie über Ihr Unternehmen schon weiß, fragt nur nach dem Rest,
-          legt Kunden und Leistungen an und schreibt Rechnungen. Sie sehen hier live, was passiert, und geben jede Rechnung selbst frei.
+          legt Kunden und Leistungen an und schreibt Rechnungen. Jede Rechnung geben Sie selbst frei. Zwei Wege stehen zur Wahl:
         </p>
       </header>
 
+      <section className="ways" aria-label="Zwei Wege zur KI">
+        <div className="oe-card way">
+          <p className="eyebrow">Weg 1 · mit Live-Ansicht</p>
+          <h2 className="card-title">Erweiterung für Claude Desktop</h2>
+          <p>Die KI arbeitet direkt mit der Datei auf Ihrem Rechner, und diese Seite zeigt jede Änderung sofort an. Herunterladen und doppelklicken; Claude Desktop fragt nach dem
+            <strong> Ordner</strong> und dem <strong>Dateinamen</strong>{s.name && <> (Ihre aktuelle Datei heißt <code>{s.name}</code>)</>}.</p>
+          <a className="oe-btn oe-btn--primary" href={MCPB} download>{Icon.down}Erweiterung (.mcpb)</a>
+        </div>
+        <div className="oe-card way">
+          <p className="eyebrow">Weg 2 · ohne Installation</p>
+          <h2 className="card-title">Skill für Claude</h2>
+          <p>Funktioniert auch in Claude im Browser. Laden Sie die ZIP-Datei in Claude in den Einstellungen bei den Skills hoch; die Code-Ausführung muss eingeschaltet sein.
+            Dann geben Sie Ihre <code>.sqlite</code>-Datei ins Gespräch und laden am Ende die aktualisierte Datei samt PDF und XRechnung wieder herunter.</p>
+          <a className="oe-btn" href={SKILL} download>{Icon.down}Skill (.zip)</a>
+          <p className="oe-hint">Für Claude Code: ZIP nach <code>~/.claude/skills/</code> entpacken. Die KI arbeitet dann direkt mit der Datei auf Ihrem Rechner.</p>
+        </div>
+      </section>
+
       <ol className="steps">
-        <li className="oe-card">
-          <h2 className="card-title">Erweiterung für Claude Desktop installieren</h2>
-          <p>Laden Sie die Erweiterung herunter und öffnen Sie sie mit einem Doppelklick. Claude Desktop fragt nach dem <strong>Ordner</strong> für
-            Ihre Rechnungen und dem <strong>Dateinamen</strong>{s.name && <> (Ihre aktuelle Datei heißt <code>{s.name}</code>)</>}. Gibt es die Datei noch nicht, legt die KI sie an.</p>
-          <a className="oe-btn oe-btn--primary" href={MCPB} download>{Icon.down}oe-rechnung.mcpb herunterladen</a>
-        </li>
         <li className="oe-card">
           <h2 className="card-title">Interview starten</h2>
           <p>Schreiben Sie in Claude zum Beispiel:</p>
@@ -44,15 +57,17 @@ export function AiView() {
             <li>„Schreib eine Rechnung an die Bäckerei Sonnenschein über 6 Stunden Beratung im Oktober.“</li>
             <li>„Welche Rechnungen sind überfällig?“</li>
           </ul>
-          <p className="oe-muted">Über das Plus-Menü in Claude lassen sich auch die fertigen Abläufe „Firma einrichten (Interview)“ und „Rechnung schreiben (Interview)“ auswählen.
+          <p className="oe-muted">Mit der Erweiterung stehen im Plus-Menü von Claude auch die fertigen Abläufe „Firma einrichten (Interview)“ und „Rechnung schreiben (Interview)“.
             Festgeschrieben wird eine Rechnung erst, wenn Sie zustimmen. PDF und XRechnung landen im Unterordner <code>Export</code>.</p>
         </li>
         <li className="oe-card">
-          <h2 className="card-title">Hier live mitverfolgen</h2>
-          <p>Öffnen Sie dieselbe Datei hier mit „Datei öffnen“. {canSaveInPlace
+          <h2 className="card-title">Ergebnis übernehmen</h2>
+          <p><strong>Erweiterung:</strong> Öffnen Sie dieselbe Datei hier mit „Datei öffnen“. {canSaveInPlace
             ? <>Ihr Browser übernimmt Änderungen der KI dann automatisch{s.linked && <> – für <strong>{s.name}</strong> ist das bereits aktiv <span className="live">live</span></>}.</>
             : <>Ihr Browser kann Dateien nicht beobachten; öffnen Sie die Datei nach Änderungen der KI erneut, oder nutzen Sie Chrome bzw. Edge.</>}
             {' '}Speichern Sie eigene Änderungen, bevor Sie die KI arbeiten lassen. Haben beide Seiten gleichzeitig etwas geändert, fragt die App nach.</p>
+          <p><strong>Skill im Browser:</strong> Speichern Sie hier zuerst, damit die Datei aktuell ist. Laden Sie danach die Datei herunter, die Claude Ihnen zurückgibt, und öffnen Sie sie hier.
+            Sie ersetzt Ihre bisherige Datei.</p>
         </li>
       </ol>
 
@@ -69,8 +84,9 @@ export function AiView() {
 
       <section className="oe-panel">
         <h2 className="card-title">Datenschutz</h2>
-        <p>Der MCP-Server läuft auf Ihrem Rechner und liest und schreibt nur die gewählte Datei und den Export-Ordner. Er sendet nichts ins Internet, auch nicht an uns.
+        <p>Erweiterung und Skill-Programm lesen und schreiben nur Ihre Rechnungsdatei und den Export-Ordner und senden nichts ins Internet, auch nicht an uns.
           Was die Werkzeuge an die KI zurückgeben (z. B. Kundenanschriften und Beträge), verarbeitet aber das KI-Modell, mit dem Sie arbeiten. Bei Claude ist das Anthropic.
+          Beim Skill im Browser liegt zusätzlich die ganze Datei für die Dauer des Gesprächs in der abgeschotteten Arbeitsumgebung von Claude.
           Wer das vermeiden möchte, nutzt ein lokales Modell, etwa über LM Studio.</p>
       </section>
     </div>

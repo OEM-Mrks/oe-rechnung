@@ -181,3 +181,7 @@ fieldset.plain:disabled .oe-segmented { opacity: .7; }
 .more[open] > summary { margin-bottom: .5em !important; }
 .code { width: 100%; margin: 0; padding: 1em; overflow-x: auto; background: var(--oe-surface); border: 1px solid var(--oe-line); border-radius: var(--oe-radius-sm); font-size: var(--oe-text-sm); }
 .code code { padding: 0; border: 0; background: none; font-size: inherit; }
+.ways { display: grid; gap: 1em; grid-template-columns: repeat(auto-fit, minmax(min(22em, 100%), 1fr)); }
+.ways > * { margin-top: 0 !important; }
+.way { display: grid; gap: .75em; align-content: start; justify-items: start; }
+.way .card-title { margin-bottom: 0 !important; }

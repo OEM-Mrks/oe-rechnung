@@ -28,4 +28,5 @@ samples
 
 # MCP-Bündel und -Paket entstehen beim Build
 mcp/bundle
+mcp/bundle-skill
 public/mcp

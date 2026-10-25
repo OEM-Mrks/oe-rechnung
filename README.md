@@ -36,9 +36,29 @@ liest und schreibt nur die gewählte Datei und deren Unterordner `Export`; es gi
 - **Live-Ansicht:** Ist dieselbe Datei in der Web-App geöffnet (Chrome/Edge), übernimmt die App Änderungen der KI alle 2 Sekunden
   automatisch. Haben beide Seiten ungespeicherte Änderungen, fragt die App, welche Fassung gilt.
 
-Quelltext in `mcp/server.ts`, gebaut von `mcp/build.mjs` (esbuild + `mcpb pack`) als Teil von `npm run build`;
-das Paket wird unter `/mcp/oe-rechnung.mcpb` mit der Seite ausgeliefert. `scripts/mcp.test.ts` testet den gebündelten Server
-über einen echten MCP-Client (Einrichtung, Kunde, Artikel, Entwurf, Festschreiben, Export, Zahlungsstatus).
+### Alternativ: Skill
+
+Dieselben Werkzeuge gibt es als **Skill** (`/mcp/oe-rechnung-skill.zip`): `SKILL.md` mit dem Interview-Ablauf, ein
+Befehlszeilen-Programm (`scripts/oe-rechnung.cjs`, eine Datei ohne Abhängigkeiten, Node.js ab 18, kein Internet nötig) und eine
+automatisch erzeugte Werkzeug-Referenz. Damit funktioniert es ohne Installation auch in Claude im Browser: Der Nutzer gibt seine
+`.sqlite`-Datei ins Gespräch und lädt am Ende die aktualisierte Datei samt PDF und XRechnung herunter. In Claude Code genügt es,
+das ZIP nach `~/.claude/skills/` zu entpacken.
+
+Node.js in Claudes Sandbox: Die [Doku zur Code-Ausführung](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool)
+garantiert nur Python 3.11. Anthropics eigene Skills (Word, PowerPoint) nutzen dort aber `node`. Der Skill prüft Node daher als
+ersten Schritt und verweist sonst auf die Web-App bzw. die Erweiterung. Offline getestet in `node:18-slim` mit `--network none`.
+
+### Aufbau
+
+| Datei | Inhalt |
+|---|---|
+| `mcp/core.ts` | Werkzeuge, Interview-Vorlagen, Dateizugriff (gemeinsam für beide Wege) |
+| `mcp/server.ts` | MCP-Server (stdio) |
+| `mcp/cli.ts` | Befehlszeile für den Skill: `--datei X <werkzeug> -` mit JSON über die Standardeingabe |
+| `mcp/skill/SKILL.md` | Anleitung für die KI (Interview-Stil, Abläufe, Ergebnis ausliefern) |
+| `mcp/build.mjs` | Bündelt mit esbuild, erzeugt `.mcpb` (via `mcpb pack`) und Skill-ZIP; Teil von `npm run build` |
+
+`scripts/mcp.test.ts` und `scripts/skill.test.ts` testen beide Bündel von der leeren Datei bis zum Export.
 
 ## Technik
 
